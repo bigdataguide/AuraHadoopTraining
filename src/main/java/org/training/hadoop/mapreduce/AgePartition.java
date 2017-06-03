@@ -95,11 +95,12 @@ class AgeReducer extends Reducer<Text, Text, Text, Text> {
 
   private String name;
   private int age;
-  private int maxScore = 0;
+  private int maxScore;
 
   @Override
   public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
     String gender = key.toString();
+    maxScore =0;
     for (Text t : values) {
       String[] arr = t.toString().split(",");
       int score = Integer.parseInt(arr[2]);
