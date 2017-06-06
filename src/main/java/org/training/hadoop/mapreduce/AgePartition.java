@@ -45,7 +45,7 @@ public class AgePartition extends Configured implements Tool {
     job.setOutputValueClass(Text.class);
     job.setOutputFormatClass(TextOutputFormat.class);
     job.setNumReduceTasks(3);
-
+    
     return job.waitForCompletion(true) ? 0 : 1;
   }
 
@@ -100,6 +100,7 @@ class AgeReducer extends Reducer<Text, Text, Text, Text> {
   @Override
   public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
     String gender = key.toString();
+    maxScore = 0;
     for (Text t : values) {
       String[] arr = t.toString().split(",");
       int score = Integer.parseInt(arr[2]);
