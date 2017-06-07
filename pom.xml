@@ -25,6 +25,7 @@
         <kafka.version>0.10.0.1</kafka.version>
         <flume.version>1.6.0</flume.version>
         <hbase.version>1.2.4</hbase.version>
+        <hive.version>2.1.1</hive.version>
     </properties>
 
     <dependencies>
@@ -47,6 +48,11 @@
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-jdbc</artifactId>
+            <version>${hive.version}</version>
         </dependency>
     </dependencies>
 
