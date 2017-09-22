@@ -14,7 +14,7 @@ public class KakfaProducerExample
         Properties props = getConfig();
         Producer<String, String> producer = new KafkaProducer<String, String>(props);
         for (int i = 0; i < 1000; i++) {
-            producer.send(new ProducerRecord<String, String>("test1", Integer.toString(i), Integer.toString(i)));
+            producer.send(new ProducerRecord<String, String>("test", Integer.toString(i), Integer.toString(i)));
             try {
                 Thread.sleep(1000);
             }
@@ -30,7 +30,7 @@ public class KakfaProducerExample
     public Properties getConfig()
     {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", "192.168.92.135:9092");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);

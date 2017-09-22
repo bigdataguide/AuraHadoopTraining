@@ -25,11 +25,19 @@ public class WordCount {
     public void map(Object key, Text value, Context context
     )
         throws IOException, InterruptedException {
-      StringTokenizer itr = new StringTokenizer(value.toString());
-      while (itr.hasMoreTokens()) {
-        word.set(itr.nextToken());
-        context.write(word, one);
-      }
+       //a，b，c，…，z开头的单词出现的频率
+        String valueLine=value.toString();
+        for(int i=0;i<valueLine.length();i++){
+          word.set(valueLine.substring(i,i+1));
+          context.write(word, one);
+        }
+
+        //single word出现的频率
+//      StringTokenizer itr = new StringTokenizer(value.toString());
+//      while (itr.hasMoreTokens()) {
+//        word.set(itr.nextToken());
+//        context.write(word, one);
+//      }
     }
   }
 
@@ -52,6 +60,10 @@ public class WordCount {
 
   public static void main(String[] args)
       throws Exception {
+//
+//    args=new String[]{"C:\\D\\IdeaProjects\\AuraHadoopTraining\\data\\mapreduce\\workcount\\text1.txt",
+//            "C:\\D\\IdeaProjects\\AuraHadoopTraining\\data\\mapreduce\\workcountResult"};
+
     Configuration conf = new Configuration();
     String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
     if (otherArgs.length < 2) {
