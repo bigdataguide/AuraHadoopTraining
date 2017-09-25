@@ -21,7 +21,7 @@ public class KafkaConsumerExample
     public static Properties getConfig()
     {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", "192.168.92.135:9092");
         props.put("group.id", "testGroup");
         props.put("enable.auto.commit", "true");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
@@ -34,7 +34,7 @@ public class KafkaConsumerExample
     {
         // launch 3 threads to consume
         int numConsumers = 3;
-        final String topic = "test1";
+        final String topic = "test";
         final ExecutorService executor = Executors.newFixedThreadPool(numConsumers);
         final List<KafkaConsumerRunner> consumers = new ArrayList<KafkaConsumerRunner>();
         for (int i = 0; i < numConsumers; i++) {

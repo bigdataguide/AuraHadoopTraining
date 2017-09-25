@@ -45,8 +45,8 @@ public class HdfsExample {
 
   public static void main(String[] args) {
     try {
-      //String path = "hdfs:namenodehost:8020/test/mkdirs-test";
-      String path = "/test/mkdirs-test";
+      String path = "hdfs://192.168.92.135:9000/test/data6";
+      //String path = "/test/mkdirs-test";
       testMkdirPath(path);
       //testDeletePath(path);
     } catch (Exception e) {

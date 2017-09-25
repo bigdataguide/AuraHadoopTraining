@@ -17,12 +17,23 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class AgePartition extends Configured implements Tool {
+
+
+/***
+ *
+ * 按照年龄分组，并降序输出所有人成绩
+ * select * from student order by age,score;
+ * */
+public class AgePartitionOrderBy extends Configured implements Tool {
 
   public int run(String[] args) throws Exception {
     if (args.length != 2) {
-      System.err.println("Usage: AgePartition <input> <output>");
+      System.err.println("Usage: AgePartitionOrderBy <input> <output>");
       ToolRunner.printGenericCommandUsage(System.out);
       System.exit(2);
     }
@@ -37,10 +48,10 @@ public class AgePartition extends Configured implements Tool {
       fs.delete(output, true);
     }
     FileOutputFormat.setOutputPath(job, output);
-    job.setJarByClass(AgePartition.class);
-    job.setMapperClass(AgeMapper.class);
-    job.setPartitionerClass(AgePartitioner.class);
-    job.setReducerClass(AgeReducer.class);
+    job.setJarByClass(AgePartitionOrderBy.class);
+    job.setMapperClass(AgeMapperOrderBy.class);
+    job.setPartitionerClass(AgePartitionerOrderBy.class);
+    job.setReducerClass(AgeReducerOrderBy.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
     job.setOutputFormatClass(TextOutputFormat.class);
@@ -50,20 +61,20 @@ public class AgePartition extends Configured implements Tool {
   }
 
   public static void main(String[] args) throws Exception {
-    int res = ToolRunner.run(new Configuration(), new AgePartition(), args);
+    int res = ToolRunner.run(new Configuration(), new AgePartitionOrderBy(), args);
     System.exit(res);
   }
 }
 
-class AgePartitioner extends Partitioner<Text, Text> {
+class AgePartitionerOrderBy extends Partitioner<Text, Text> {
 
   @Override
   public int getPartition(Text key, Text value, int n) {
     if (n == 0) {
       return 0;
     }
-    String[] arr = value.toString().split(",");
-    int age = Integer.parseInt(arr[1]);
+
+    int age = Integer.parseInt(key.toString());
     if (age <= 20) {
       return 0;
     } else if (age <= 50) {
@@ -74,7 +85,7 @@ class AgePartitioner extends Partitioner<Text, Text> {
   }
 }
 
-class AgeMapper extends Mapper<Object, Text, Text, Text> {
+class AgeMapperOrderBy extends Mapper<Object, Text, Text, Text> {
 
   private Text outKey = new Text();
   private Text outValue = new Text();
@@ -83,38 +94,68 @@ class AgeMapper extends Mapper<Object, Text, Text, Text> {
   public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
     // name, age, gender, score
     String[] arr = value.toString().split(",");
-    outKey.set(arr[2]); // gender
-    outValue.set(arr[0] + "," + arr[1] + "," + arr[3]); // name,age,score
+    outKey.set(arr[1]); // age
+    outValue.set(arr[0] + "," + arr[2] + "," + arr[3]); // name,gender,score
     context.write(outKey, outValue);
   }
 }
 
-class AgeReducer extends Reducer<Text, Text, Text, Text> {
+class AgeReducerOrderBy extends Reducer<Text, Text, Text, Text> {
   private Text outKey = new Text();
   private Text outValue = new Text();
 
   private String name;
-  private int age;
+  private String gender;
   private int maxScore;
 
   @Override
   public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-    String gender = key.toString();
+    int age = Integer.parseInt(key.toString());;
     maxScore =0;
+
+    List<Student> scoreList=new ArrayList<Student>();
+
     for (Text t : values) {
+
       String[] arr = t.toString().split(",");
       int score = Integer.parseInt(arr[2]);
-      if (score > maxScore) {
-        name = arr[0];
-        age = Integer.parseInt(arr[1]);
-        maxScore = score;
+      name = arr[0];
+       gender = (arr[1]);
+      Student student=new Student();
+      student.setAge(age);
+      student.setGender(gender);
+      student.setName(name);
+      student.setScore(score);
+      scoreList.add(student);
+    }
+
+
+    while(scoreList.size()>0){
+
+      int maxIndex=0;
+      for(int k=1;k<scoreList.size();k++){
+          if(scoreList.get(k).getScore()>scoreList.get(maxIndex).getScore())   {
+
+            maxIndex=k;
+          };
       }
+
+      Student s=scoreList.get(maxIndex);
+      outKey.set(s.getName()); // name
+      outValue.set("age-" + s.getAge() + ",gender-" + s.getGender() + ",score-" + s.getScore());
+      context.write(outKey, outValue);
+      scoreList.remove(maxIndex);
+
     }
 
     //sort by scores排序，对value
+//    for(int j=0;j<scoreListOrdered.size();j++){
+//      System.out.println("=============="+scoreListOrdered.get(j).getScore()+scoreListOrdered.get(j).getName());
+//      Student s=scoreListOrdered.get(j);
+//      outKey.set(s.getName()); // name
+//      outValue.set("age-" + s.getAge() + ",gender-" + s.getGender() + ",score-" + s.getScore());
+//      context.write(outKey, outValue);
+//    }
 
-    outKey.set(name); // name
-    outValue.set("age-" + age + ",gender-" + gender + ",maxScore-" + maxScore);
-    context.write(outKey, outValue);
   }
 }
