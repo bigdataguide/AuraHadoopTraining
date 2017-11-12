@@ -34,7 +34,7 @@ public class KafkaConsumerExample
     {
         // launch 3 threads to consume
         int numConsumers = 3;
-        final String topic = "test1";
+        final String topic = "test";
         final ExecutorService executor = Executors.newFixedThreadPool(numConsumers);
         final List<KafkaConsumerRunner> consumers = new ArrayList<KafkaConsumerRunner>();
         for (int i = 0; i < numConsumers; i++) {
