@@ -14,7 +14,8 @@ public class KakfaProducerExample
         Properties props = getConfig();
         Producer<String, String> producer = new KafkaProducer<String, String>(props);
         for (int i = 0; i < 1000; i++) {
-            producer.send(new ProducerRecord<String, String>("test1", Integer.toString(i), Integer.toString(i)));
+            System.out.println("i:" + i);
+            producer.send(new ProducerRecord<String, String>("test", Integer.toString(i), Integer.toString(i)));
             try {
                 Thread.sleep(1000);
             }
