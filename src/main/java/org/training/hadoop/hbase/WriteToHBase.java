@@ -50,7 +50,7 @@ public class WriteToHBase {
       bufferedMutator = connection.getBufferedMutator(TableName.valueOf(TableInformation.TABLE_NAME));
       //describe the data
       for (int i = 0; i < 1000; i++) {
-        Put put = new Put(Bytes.toBytes("row" + String.format("03%d", i)));
+        Put put = new Put(Bytes.toBytes("row" + String.format("%03d", i)));
         put.addColumn(Bytes.toBytes(TableInformation.FAMILY_NAME_1), Bytes.toBytes(TableInformation.QUALIFIER_NAME_1_1), Bytes.toBytes(i));
         put.addColumn(Bytes.toBytes(TableInformation.FAMILY_NAME_1), Bytes.toBytes(TableInformation.QUALIFIER_NAME_1_2), Bytes.toBytes(i));
         put.addColumn(Bytes.toBytes(TableInformation.FAMILY_NAME_2), Bytes.toBytes(TableInformation.QUALIFIER_NAME_2_1), Bytes.toBytes(i));
