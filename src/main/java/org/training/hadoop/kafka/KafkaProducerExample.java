@@ -7,7 +7,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.util.Properties;
 
 
-public class KakfaProducerExample
+public class KafkaProducerExample
 {
     public void produceMessage()
     {
@@ -44,7 +44,7 @@ public class KakfaProducerExample
 
     public static void main(String[] args)
     {
-        KakfaProducerExample example = new KakfaProducerExample();
+        KafkaProducerExample example = new KafkaProducerExample();
         example.produceMessage();
     }
 }
