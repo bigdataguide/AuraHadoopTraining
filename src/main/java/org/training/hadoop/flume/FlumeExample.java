@@ -12,7 +12,7 @@ public class FlumeExample {
 
     public static void main(String[] args){
         MyRpcClientFacade clientFacade = new MyRpcClientFacade();
-        clientFacade.init("bigdata", 41414);
+        clientFacade.init("192.168.222.128", 41414);
         //Send 10 event to the remote Flume agent.That agent should be configured to listen with AvroSource
         String msg = "Hello Flume!";
         for(int i=0;i<10;i++){
